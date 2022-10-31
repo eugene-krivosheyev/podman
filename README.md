@@ -11,8 +11,8 @@ Prerequisites
 - [ ] [Установлен Podman и зависимости](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/finding_running_and_building_containers_with_podman_skopeo_and_buildah)
 ```shell
 sudo dnf update
-dnf install -y podman
-dnf install -y slirp4netns # for rootless containers
+sudo dnf install -y podman
+sudo dnf install -y slirp4netns # for rootless containers
 ```
 
 ---
@@ -478,7 +478,7 @@ Then участники делятся проблемами и отвечают 
 
 Как собрать с `Containerfile` и Buildah под капотом
 ---------------------------------------------------
-- [ ] [Ключевые директивы Dockerfile](https://docs.docker.com/engine/reference/builder)
+- [ ] [Ключевые директивы Containerfile](https://www.mankier.com/5/Containerfile)
 - [`FROM`](https://docs.docker.com/engine/reference/builder/#from) + [`--platform=`](https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/)
 - [`WORKDIR`](https://docs.docker.com/engine/reference/builder/#workdir) создаст папку при необходимости
 - [`COPY`](https://docs.docker.com/engine/reference/builder/#copy) [and](https://stackoverflow.com/questions/24958140/what-is-the-difference-between-the-copy-and-add-commands-in-a-dockerfile/24958548#24958548) [`ADD`](https://docs.docker.com/engine/reference/builder/#add) from build context (+ [`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file))
