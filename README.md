@@ -4,8 +4,7 @@ Intro to Podman
 
 Prerequisites
 =============
-- [ ] Virtual machine for practice
-- [ ] RAM ≥ 4Gb
+- [ ] Virtual machine for practice (vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux)
 - [ ] Доступен git repo с данным руководством {{ git-repo }} `https://github.com/eugene-krivosheyev/podman`
 - [ ] Доступен {{ registry-host }}
 - [ ] Доступ учетной записи {{ registry-account }} на {{ registry-host }}
@@ -461,6 +460,7 @@ Then участники делятся проблемами и отвечают 
 ----
 - Какие способы идентификации контейнера?
 - Какое имя у контейнера по умолчанию?
+- Где можно определить конфигурацию сети (например, меппинг портов) – для контейнера или для пода?
 - Что за логи наблюдаются для контейнера и пода? 
 - В чем физический смысл удаления контейнера?
 - В чем физический смысл удаления пода?
