@@ -110,7 +110,14 @@ Given
 - [ ] Пары участников с чередованием ролей в паре
 - [ ] Форк данного руководства для собственных пометок
 - [ ] Форк открыт в браузере для внесения пометок
-- [ ] Для последующей удобной работы с copy+paste для ресурсов раздела [Prerequisites](#Prerequisites) плейсхолдеры заменены актуальными значениями
+- [ ] Все команды запускаются из-под суперпользователя
+```shell
+sudo
+```
+или
+```shell
+su -
+```
 
 - [ ] Как описать _сценарий_ использования команд?
 ```shell
@@ -141,9 +148,12 @@ podman logout
 podman login {{ registry-host }}
 ```
 
+- Сценарий "Как найти нужный образ в registry?"
+Залогиниться браузером по адресу {{ registry-host }}, в поиске найти нужный образ и скопировать полное символьное имя (включая сетевой адрес хоста).
+
 - Сценарий "Как ...?"
 ```shell
-podman image pull alpine:3.14
+podman image pull {{ registry-host }}/{{ path }}/alpine:3.14
 podman system df
 ````
 
@@ -328,10 +338,10 @@ Then участники делятся проблемами и отвечают 
 
 Жизненный цикл пода и контейнера <sup>30</sup>
 ================================
-- [ ] container = running process + container data (container layer)
-- [ ] Что значит "запуск" контейнера? Что именно там запускается?
-- [ ] Как можно доопределить команду, запускаемую в контейнере?
+- [x] container = running process + container data (container layer)
+- [x] Что значит "запуск" контейнера? Что именно там запускается?
 - [ ] Сколько по времени будет работать контейнер?
+- [ ] Как можно доопределить команду, запускаемую в контейнере?
 
 - [ ] Что нужно определить для запуска контейнера?
 - disk image
@@ -339,8 +349,8 @@ Then участники делятся проблемами и отвечают 
 - имя контейнера (+defaults)
 - virtual network
 - folder | volume mapping
-- entry point (image `entrypoint` override)
 - guest environment variables
+- command line (image `entrypoint` override)
 - command line arguments (image `cmd` override)
 
 - [ ] Жизненный цикл контейнера
@@ -499,6 +509,8 @@ Then участники делятся проблемами и отвечают 
 
 Hands-on practice quest #03: Simple java application containerization with Buildah <sup>30 + 10</sup>
 =======================
+
+
 
 Изоляция данных <sup>20</sup>
 ===============
