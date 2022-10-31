@@ -2,6 +2,12 @@ Intro to Podman
 ===============
 2 days, 8 ac.hrs, 7 as.hrs.
 
+Знакомство
+==========
+1. Роль
+1. Текущий уровень с Docker/Podman: 0–3
+1. Как поймете, что тренинг дал Вам ценность?
+
 Prerequisites
 =============
 - [ ] Virtual machine for practice (vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux)
