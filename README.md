@@ -11,8 +11,8 @@ Intro to Podman
 Prerequisites
 =============
 - [ ] Virtual machine for practice 
-- vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux
-- local virtual machine + ssh client
+- vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux + local ssh client
+- local virtual machine + local ssh client
 - [ ] Доступен git repo с данным руководством {{ git-repo }} `https://github.com/eugene-krivosheyev/podman`
 - [ ] Доступен {{ registry-host }}
 - [ ] Доступ учетной записи {{ registry-account }} на {{ registry-host }}
