@@ -299,19 +299,19 @@ podman container run --name demo -it alpine
 /# touch side-effect.txt
 /# exit
 podman container diff demo
-podman container commit demo {{ registry-host }}/container-training/{{ registry-account }}/demo
+podman container commit demo {{ registry-host }}/container-training-docker/{{ registry-account }}/demo
 podman image ls
 ```
 
 - Сценарий "Как ...?"
 ```shell
-podman image tag {{ registry-host }}/container-training/{{ registry-account }}/demo:latest {{ registry-host }}/container-training/{{ registry-account }}/demo:1.0.0
+podman image tag {{ registry-host }}/container-training-docker/{{ registry-account }}/demo:latest {{ registry-host }}/container-training-docker/{{ registry-account }}/demo:1.0.0
 podman image ls
 ```
 
 - Сценарий "Как ...?"
 ```shell
-podman image push {{ registry-host }}/container-training/{{ registry-account }}/demo:1.0.0
+podman image push {{ registry-host }}/container-training-docker/{{ registry-account }}/demo:1.0.0
 ```
 
 - Сценарий "Как ...?"
@@ -320,9 +320,9 @@ podman image ls
 podman container rm demo
 podman image prune
 podman image ls
-podman image rm {{ registry-host }}/container-training/{{ registry-account }}/demo:1.0.0
+podman image rm {{ registry-host }}/container-training-docker/{{ registry-account }}/demo:1.0.0
 podman image ls
-podman image rm {{ registry-host }}/container-training/{{ registry-account }}/demo:latest
+podman image rm {{ registry-host }}/container-training-docker/{{ registry-account }}/demo:latest
 podman image ls
 podman image prune --all
 ```
@@ -352,6 +352,10 @@ Then участники делятся проблемами и отвечают 
 - guest environment variables
 - command line (image `entrypoint` override)
 - command line arguments (image `cmd` override)
+
+- [ ] Экстернализация конфигурации приложения
+- Задачи экстернализации конфигурации приложения
+- Способы: `--env` и аргументы командной строки
 
 - [ ] Жизненный цикл контейнера
 - `podman container create` + `podman container start` = `podman container run` `[args]`
@@ -567,7 +571,7 @@ When участники именуют сценарии, формируют св
 ```shell
 vi backend/Containerfile # Replace base image with one that suitable for corporate image registry
 podman image build \
-  --tag {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0 \ # set up symbolic name for image
+  --tag {{ registry-host }}/container-training-docker/{{ registry-account }}/app:1.0.0 \ # set up symbolic name for image
   ./backend # folder where Containerfile located
 
 podman image ls
@@ -581,7 +585,7 @@ podman container run \
  --detach \ # -d
  --publish 8080:8080 \ # -p [host address:]8080:8080
  --env SPRING_PROFILES_ACTIVE=qa \ # -e: в контейнере действует переменная окружения
- {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0 \ #  имя и тег
+ {{ registry-host }}/container-training-docker/{{ registry-account }}/app:1.0.0 \ #  имя и тег
   --spring.profiles.active=qa # параметры командной строки
 ```
 
@@ -657,7 +661,7 @@ podman container run \
  -- ... \ # TODO проброс порта на хост
  -- ... \ # TODO профиль конфигурации Spring 'qa'
  --volume $(pwd)/log:/dbo/log \ # -v: папка в конейнере /dbo/log отображена на папку на хосте /current-path/log. Windows caution for $()!
- {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0
+ {{ registry-host }}/container-training-docker/{{ registry-account }}/app:1.0.0
 
 cat $(pwd)/log/dbo.log
 ```

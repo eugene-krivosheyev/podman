@@ -1,5 +1,6 @@
-FROM eclipse-temurin:11-jre
+FROM alpine:3.16
 EXPOSE 8080
+RUN apk update && apk add openjdk11-jre
 WORKDIR /dbo
 COPY dbo-1.0-SNAPSHOT.jar ./app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
