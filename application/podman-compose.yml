@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:11-alpine
+    networks:
+      - deployment
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: dbo-db
+      POSTGRES_USER: dbo
+      POSTGRES_PASSWORD: dbo
+
+  backend:
+    image: # TODO
+    command: --spring.profiles.active=preprod
+    networks:
+      deployment:
+    environment:
+      SPRING_PROFILES_ACTIVE: preprod
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db/dbo-db"
+      SPRING_DATASOURCE_USERNAME: dbo
+      SPRING_DATASOURCE_PASSWORD: dbo
+
+volumes:
+  db:
+
+networks:
+  deployment:

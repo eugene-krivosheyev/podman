@@ -505,29 +505,208 @@ Then участники делятся проблемами и отвечают 
 - [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) [and](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact) [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd) (+ preferred `exec` and similar `default parameters to ENTRYPOINT`, `shell` forms)
 - [`LABEL`](https://docs.docker.com/engine/reference/builder/#label)
 
+```shell
+podman container run [--entrypoint Dockerfile's ENTRYPOINT override] IMAGE [Dockerfile's CMD defaults override] 
+```
+```shell
+FROM alpine
+ENTRYPOINT ["echo", "Hello"]
+CMD ["World"] # 'default parameters to ENTRYPOINT' form
+...
+$ podman build --tag test .
+...
+$ podman run --rm test
+Hello World
+...
+$ podman run --rm test Alpine
+Hello Alpine
+```
+
+- [ ] Системные образы для базы VS прикладные образы с приложениями
+
+- [ ] Кратко по оптимизации сборки:
+- Сборка `FROM scratch`, "пинцетный метод"
+- Использование легковесных базовых образов
+```shell
+alpine 5.33MB
+registry.access.redhat.com/ubi8/ubi-micro 51.6MB
+ubuntu 65.6MB
+debian:stable-slim 74.3MB
+```
+- Понятие build context и кеширование при сборке (+ .dockerignore)
+- Изменение порядка директив в Dockerfile, чтобы максимально повторно использовать кеш builder
+- Объединение директив, чтобы снизить количество слоёв образа
+- Multi-stage build, чтобы не тащить в итоговый образ инфраструктуру сборки
+- Объединение слоёв образа в один слой
+
 ---
 
 Hands-on practice quest #03: Simple java application containerization with Buildah <sup>30 + 10</sup>
 =======================
+Given
+-----
+- [ ] Склонирован git repo c приложением
+```shell
+application
+└── backend
+    ├── Containerfile
+    └── dbo-1.0-SNAPSHOT.jar
+```
+- [ ] Задана рабочая папка
+```shell
+cd application
+```
+- [ ] Проведена аутентификация консольного Podman CLI в Registry
+```shell
+podman login ...
+```
 
+When участники именуют сценарии, формируют свои команды и проверяют их вывод и поведение
+----
+- [ ] Сценарий "Как собрать образ на основе Containerfile?"
+```shell
+vi backend/Containerfile # Replace base image with one that suitable for corporate image registry
+podman image build \
+  --tag {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0 \ # set up symbolic name for image
+  ./backend # folder where Containerfile located
 
+podman image ls
+```
+
+- [ ] Сценарий "Как запустить 'одноразовый' контейнер на базе своего образа с приложением?"
+```shell
+podman container run \
+ --name backend \
+ --rm \ # одноразовый: удалится после остановки
+ --detach \ # -d
+ --publish 8080:8080 \ # -p [host address:]8080:8080
+ --env SPRING_PROFILES_ACTIVE=qa \ # -e: в контейнере действует переменная окружения
+ --volume $(pwd)/log:/dbo/log \ # -v: папка в конейнере /dbo/log отображена на папку на хосте /current-path/log. Windows caution for $()!
+ {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0 \ #  имя и тег
+  --spring.profiles.active=qa # параметры командной строки
+```
+
+- [ ] Сценарий "Как протестировать запущенное в контейнере приложение?"
+```shell
+podman container ls --all # Check for status
+
+curl localhost:8080/dbo/actuator/health
+open http://localhost:8080/dbo/swagger-ui/
+```
+
+- [ ] Сценарий "Как мягко остановить приложение средствами самого приложения?"
+```shell
+curl -X POST localhost:8080/dbo/actuator/shutdown
+```
+
+- [ ] Сценарий "Как опубликовать проверенный образ в репозитории?"
+```shell
+podman image push ...
+```
+
+Then участники делятся проблемами и отвечают на вопросы
+----
+- [ ] В каком порядке выполнялись директивы Dockerfile?
+- [ ] Сколько новых layers добавила сборка к базовому образу?
+- [ ] Когда и по какой причине остановился контейнер?
+- [ ] Что происходит с процессом приложения, когда останавливаем контейнер?
+- [ ] Сколько раз вы столкнулись с настройкой экстернализированной конфигурации приложения?
 
 Изоляция данных <sup>20</sup>
 ===============
+- [x] Что происходит с изменениями в образе при остановке контейнера?
+- [x] Как зафиксировать изменения в образе?
+- [x] Как откатить изменения в образе?
+- [ ] Как можно сохранять изменения на диске _вне_ образа? (stateful containers): mounts
+- tmpfs
+```shell
+docker container run 
+ --tmpfs /tmp
+ --tmpfs /var/log
+ --tmpfs /dbo/log 
+```
+- shared folders
+```shell
+podman container run --volume "$(pwd)"/folder/file:/folder/file:ro # пути у folder абсолютные, начинаются с "/"
+```
+- volumes
+```shell
+podman container run --volume my_volume:/folder/file:ro # имя volume не начинается с "/"
+```
+
+- [ ] Логи
+- консольные логи: stdout/stderr
+- собираются и упаковываются в выбранный формат (определяется log driver)
+```shell
+podman logs [--until=10s] ...
+```
 
 Hands-on practice quest #04: Simple _stateful_ application containerization <sup>20 + 10</sup>
 =======================
+Given
+-----
+- [ ] Собран образ с приложением
+
+When участники именуют сценарии, формируют свои команды и проверяют их вывод и поведение
+----
+- [ ] Сценарий "Как запустить stateful container c пробросом на хостовую папку?"
+```shell
+podman container run \
+ -- ... \ # TODO имя контейнера
+ -- ... \ # TODO одноразовый: удалится после остановки
+ -- ... \ # TODO фоновой режим
+ -- ... \ # TODO проброс порта на хост
+ -- ... \ # TODO профиль конфигурации Spring 'qa'
+ --volume $(pwd)/log:/dbo/log \ # -v: папка в конейнере /dbo/log отображена на папку на хосте /current-path/log. Windows caution for $()!
+ {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0
+
+open $(pwd)/log
+```
+
+Then участники делятся проблемами и отвечают на вопросы
+----
+- [ ] В данных сценариях какой тип mount лучше подойдет? tmpfs, shared folder, volume?
 
 Оркестрация <sup>40</sup>
 ===========
 Задачи оркестраторов
 --------------------
+- [ ] Зачем нужны оркестраторы?
+- [ ] Понятие 'сервиса' в оркестраторах
+- [ ] Структура дескриптора оркестратора Compose
 
 Управление группой контейнеров с Podman Compose
 ------------------------------------------------
+```shell
+cd application
+podman compose up --detach
+podman compose down
+```
 
 Hands-on practice quest #05: Multi-component stateful application containerization with Compose <sup>30 + 10</sup>
 =======================
+Given
+-----
+- [ ] Установлен Podman Compose
+```shell
+sudo dnf install -y pip
+pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz
+```
+
+When
+----
+Then
+----
 
 Рекомендуемые практики <sup>30</sup>
 ======================
+- [ ] Минимизировать [security риски](https://snyk.io/blog/10-docker-image-security-best-practices)
+1. Используйте минимальные образы: быстрее и меньше зависимостей + меньше рисков
+1. Запуск в rootless mode
+1. Подписывать образы и проверять подписи
+1. [Сканеры уязвимостей](https://techbeacon.com/security/10-top-open-source-tools-docker-security) для образов `docker scan --dependency-tree <image>`
+1. [Линтеры](https://medium.com/@renatomefi/writing-dockerfile-like-a-software-developer-linting-9fd8c620174) для Dockerfile
+1. [COPY вместо ADD](https://nickjanetakis.com/blog/docker-tip-2-the-difference-between-copy-and-add-in-a-dockerile) + .dockerignore
+1. Фиксированные теги для идентификации образов (Semantic versioning or Unique tags)
+1. _Multi-Stage Build_ в том числе для того, чтобы в итоговый образ не утекли чувствительные данные
+1. Хранение и передача конфигурации и чувствительных данных: _Secrets_
