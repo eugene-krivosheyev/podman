@@ -581,7 +581,6 @@ podman container run \
  --detach \ # -d
  --publish 8080:8080 \ # -p [host address:]8080:8080
  --env SPRING_PROFILES_ACTIVE=qa \ # -e: в контейнере действует переменная окружения
- --volume $(pwd)/log:/dbo/log \ # -v: папка в конейнере /dbo/log отображена на папку на хосте /current-path/log. Windows caution for $()!
  {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0 \ #  имя и тег
   --spring.profiles.active=qa # параметры командной строки
 ```
@@ -660,7 +659,7 @@ podman container run \
  --volume $(pwd)/log:/dbo/log \ # -v: папка в конейнере /dbo/log отображена на папку на хосте /current-path/log. Windows caution for $()!
  {{ registry-host }}/container-training/{{ registry-account }}/app:1.0.0
 
-open $(pwd)/log
+cat $(pwd)/log/dbo.log
 ```
 
 Then участники делятся проблемами и отвечают на вопросы
@@ -673,14 +672,21 @@ Then участники делятся проблемами и отвечают 
 --------------------
 - [ ] Зачем нужны оркестраторы?
 - [ ] Понятие 'сервиса' в оркестраторах
-- [ ] Структура дескриптора оркестратора Compose
+- [ ] Структура [дескриптора оркестратора Compose](application/podman-compose.yml)
+- services
+- mounts
+- virtual networks
 
 Управление группой контейнеров с Podman Compose
 ------------------------------------------------
 ```shell
 cd application
-podman compose up --detach
-podman compose down
+podman-compose up --detach
+
+podman-compose ps
+podman-compose logs
+
+podman-compose down
 ```
 
 Hands-on practice quest #05: Multi-component stateful application containerization with Compose <sup>30 + 10</sup>
@@ -695,8 +701,30 @@ pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz
 
 When
 ----
-Then
+- [ ] Сценарий "Как запустить группу контейнеров под управлением Compose?"
+```shell
+cd application
+podman-compose up --detach
+```
+
+- [ ] Сценарий "Как наблюдать контейнеры под управлением Compose?"
+```shell
+cd application
+podman-compose ps
+podman-compose port
+podman-compose logs
+```
+
+- [ ] Сценарий "Как остановить и удалить контейнеры?"
+```shell
+cd application
+podman-compose down
+```
+
+Then участники делятся проблемами и отвечают на вопросы
 ----
+- [ ] Можно ли наблюдать контейнеры средствами podman, а не Compose?
+
 
 Рекомендуемые практики <sup>30</sup>
 ======================
