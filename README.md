@@ -5,6 +5,7 @@ Intro to Podman
 Знакомство
 ==========
 1. Роль
+1. Текущий уровень с Linux: 0–3
 1. Текущий уровень с Docker/Podman: 0–3
 1. Как поймете, что тренинг дал Вам ценность?
 
@@ -12,7 +13,6 @@ Prerequisites
 =============
 - [ ] Virtual machine for practice 
 - vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux + local ssh client
-- local virtual machine + local ssh client
 - [ ] Доступен git repo с данным руководством {{ git-repo }} `https://github.com/eugene-krivosheyev/podman`
 - [ ] Доступен {{ registry-host }}
 - [ ] Доступ учетной записи {{ registry-account }} на {{ registry-host }}
@@ -109,7 +109,6 @@ Given
 -----
 - [ ] Пары участников с чередованием ролей в паре
 - [ ] Форк данного руководства для собственных пометок
-- [ ] Форк открыт в браузере для внесения пометок
 - [ ] Все команды запускаются из-под суперпользователя
 ```shell
 sudo
@@ -153,7 +152,7 @@ podman login {{ registry-host }}
 
 - Сценарий "Как ...?"
 ```shell
-podman image pull {{ registry-host }}/{{ path }}/alpine:3.14
+podman image pull {{ registry-host }}/{{ os-images-path }}/alpine:3.14
 podman system df
 ````
 
@@ -161,7 +160,7 @@ podman system df
 ```shell
 podman container run hello
 
-podman container run --name demo -it alpine:3.14
+podman container run --name demo -it {{ registry-host }}/{{ os-images-path }}/alpine:3.14
 /# cat /etc/os-release
 /# exit 
 ```
@@ -186,7 +185,7 @@ Then участники отвечают на вопросы
 ==============================
 Зачем нужен образ
 -----------------
-- [ ] Задача среды исполнения контейнеров: изоляция ПО от хоста
+- [ ] Задача среды исполнения контейнеров: изоляция нашего ПО от хоста
 - [ ] Отображение диска контейнера на диск хоста: _образ_
 
 Что хранит образ
@@ -283,19 +282,19 @@ podman image ls # TODO: собственные пометки участнико
 
 - Сценарий "Как ...?"
 ```shell
-podman image pull alpine:3.14
+podman image pull {{ registry-host }}/{{ os-images-path }}/alpine:3.14
 podman image ls
 ```
 
 - Сценарий "Как ...?"
 ```shell
-podman image history alpine:3.14
-podman image inspect alpine:3.14 [| jq]
+podman image history {{ registry-host }}/{{ os-images-path }}/alpine:3.14
+podman image inspect {{ registry-host }}/{{ os-images-path }}/alpine:3.14 [| jq]
 ```
 
 - Сценарий "Как ...?"
 ```shell
-podman container run --name demo -it alpine
+podman container run --name demo -it {{ registry-host }}/{{ os-images-path }}/alpine:3.14
 /# touch side-effect.txt
 /# exit
 podman container diff demo
@@ -392,14 +391,14 @@ podman container ls --all
 
 - Сценарий "Как запустить 'одноразовый' контейнер?"
 ```shell
-podman container run --rm -it alpine:3.14 # note `--rm`
+podman container run --rm -it {{ registry-host }}/{{ os-images-path }}/alpine:3.14 # note `--rm`
 /# exit
 podman container ls --all
 ```
 
 - Сценарий "Как запустить контейнер в фоновом режиме?"
 ```shell
-podman container run --detach --name proxy --publish 8080:80 nginx:1.19.4 # note `--detach` or `-d`
+podman container run --detach --name proxy --publish 8080:80 {{ registry-host }}/{{ software-images-path }}/nginx:1.19.4 # note `--detach` or `-d`
 podman container ls
 curl localhost:8080
 ```
@@ -534,7 +533,6 @@ Hello Alpine
 ```shell
 alpine 5.33MB
 registry.access.redhat.com/ubi8/ubi-micro 51.6MB
-ubuntu 65.6MB
 debian:stable-slim 74.3MB
 ```
 - Понятие build context и кеширование при сборке (+ .dockerignore)
