@@ -11,8 +11,7 @@ Intro to Podman
 
 Prerequisites
 =============
-- [ ] Virtual machine for practice 
-- vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux + local ssh client
+- [ ] Virtual machine for practice @ vra8: `IT Academy Training Group`, HDD 50Gb, OS AlmaLinux + local ssh client
 - [ ] Доступен git repo с данным руководством {{ git-repo }} `https://github.com/eugene-krivosheyev/podman`
 - [ ] Доступен {{ registry-host }}
 - [ ] Доступ учетной записи {{ registry-account }} на {{ registry-host }}
@@ -22,7 +21,11 @@ sudo dnf update
 sudo dnf install -y podman
 sudo dnf install -y slirp4netns # for rootless containers
 ```
-
+```shell
+sudo dnf install -y bash-completion
+source <(podman completion bash)
+sudo podman completion -f /etc/bash_completion.d/podman bash
+```
 ---
 
 Intro to containerization and Podman <sup>30 мин</sup>
