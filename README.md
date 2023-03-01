@@ -26,6 +26,7 @@ sudo dnf install -y bash-completion
 source <(podman completion bash)
 sudo podman completion -f /etc/bash_completion.d/podman bash
 ```
+- [ ] application/backend/dbo.jar c приложением доступен для скачивания участникам в корп. сети  
 ---
 
 Intro to containerization and Podman <sup>30 мин</sup>
@@ -595,7 +596,7 @@ podman container run \
 podman container ls --all # Check for status
 
 curl localhost:8080/dbo/actuator/health
-open http://localhost:8080/dbo/swagger-ui/
+open http://localhost:8080/dbo/swagger-ui/ # open in browser at developer workstation
 ```
 
 - [ ] Сценарий "Как мягко остановить приложение средствами самого приложения?"
