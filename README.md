@@ -566,6 +566,10 @@ cd application
 ```shell
 podman login ...
 ```
+При необходимости переноса файлов на удаленную машину возможно воспользоваться командой [`scp`](https://linuxize.com/post/how-to-use-scp-command-to-securely-transfer-files/):
+```shell
+scp -r <path to local file|folder> user@remote_host:/target/path
+```
 
 When участники именуют сценарии, формируют свои команды и проверяют их вывод и поведение
 ----
