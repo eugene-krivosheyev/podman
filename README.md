@@ -148,7 +148,7 @@ podman system df
 - Сценарий "Как ...?"
 ```shell
 podman logout
-podman login {{ registry-host }}
+podman login {{ registry-host }}  # a.r.r
 ```
 
 - Сценарий "Как найти нужный образ в registry?"
@@ -156,7 +156,7 @@ podman login {{ registry-host }}
 
 - Сценарий "Как ...?"
 ```shell
-podman image pull {{ registry-host }}/{{ os-images-path }}/alpine:3.14
+podman image pull {{ registry-host }}/{{ os-images-path }}/alpine:3.14  # a.r.r/ext-rbru-osimage-docker/alpine:3.14
 podman system df
 ````
 
